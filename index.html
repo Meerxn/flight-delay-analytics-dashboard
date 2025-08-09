@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Delay Analytics Dashboard | MSIS 502 Final Project</title>
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23000'/><path d='M8 16l8-4 8 4-8 4z' fill='%23fff'/><circle cx='16' cy='16' r='2' fill='%23000'/></svg>">
+    
+    <style>
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #333333;
+            --accent-color: #666666;
+            --success-color: #000000;
+            --danger-color: #888888;
+            --dark-bg: #ffffff;
+            --card-bg: #f8f9fa;
+            --text-primary: #000000;
+            --text-secondary: #666666;
+            --border-color: #e5e7eb;
+            --gradient-1: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            --gradient-2: linear-gradient(135deg, #f1f3f4 0%, #ffffff 100%);
+            --gradient-3: linear-gradient(135deg, #f8f9fa 0%, #e5e7eb 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            background: var(--dark-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 3rem 0;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        .subtitle {
+            background: var(--card-bg);
+            padding: 2rem;
+            margin: 0;
+            border-bottom: 1px solid var(--border-color);
+            max-width: 100%;
+            text-align: center;
+        }
+
+        .subtitle p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .subtitle strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Navigation */
+        .nav-container {
+            background: var(--dark-bg);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 0 2rem;
+        }
+
+        .nav-item {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-item:hover {
+            background: var(--secondary-color);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-item.active {
+            background: var(--secondary-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Container and Layout */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .section-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        .analysis-quote {
+            background: var(--card-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            position: relative;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .analysis-quote::before {
+            content: '"';
+            font-size: 4rem;
+            color: var(--primary-color);
+            position: absolute;
+            top: -0.5rem;
+            left: 0.5rem;
+            opacity: 0.2;
+        }
+
+        .quote-author {
+            text-align: right;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--dark-bg) 100%);
+            padding: 4rem 2rem;
+            margin: -1rem -2rem 3rem -2rem;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            font-weight: 400;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-number {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-stat-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Project Overview */
+        .project-overview {
+            margin: 3rem 0;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .overview-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .overview-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .overview-card h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .overview-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .overview-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .overview-card li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .overview-card li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* Card Styles */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary-color);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+        }
+
+        .metric-card {
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem 1.5rem 1rem 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .chart-explanation {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .chart-explanation h4 {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+
+        .key-finding {
+            background: linear-gradient(90deg, var(--card-bg) 0%, var(--dark-bg) 100%);
+            border-left: 3px solid var(--primary-color);
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .key-finding-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .regression-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .metric-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .metric-box-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: block;
+        }
+
+        .metric-box-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+        }
+
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            text-align: center;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .chart-container {
+            height: 450px;
+            position: relative;
+            padding: 0;
+            margin: 1rem 0;
+            overflow: visible;
+        }
+
+        .chart-container.large {
+            height: 550px;
+            padding: 0;
+        }
+
+        /* Interactive Elements */
+        .filters {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        select, input {
+            background: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.5rem;
+            color: var(--text-primary);
+            font-family: inherit;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Insights Section */
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .insight-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 4px solid var(--accent-color);
+            position: relative;
+        }
+
+        .insight-icon {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            color: var(--accent-color);
+            opacity: 0.7;
+        }
+
+        .insight-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .insight-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Enhanced Animations */
+        .fade-in {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .slide-in {
+            animation: slideIn 0.8s ease-out forwards;
+        }
+
+        .bounce-in {
+            animation: bounceIn 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Chart animations */
+        .chart-container {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .chart-container.loaded {
+            opacity: 1;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--card-bg);
+            padding: 3rem 0;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .footer p {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        /* Special Effects */
+        .glow {
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <h1>Flight Delay Analytics</h1>
+            <p>Comprehensive Analysis of US Domestic Flight Delays | MSIS 502 Final Project</p>
+        </div>
+    </div>
+
+    <div class="subtitle">
+        <p><strong>Project Objective:</strong> Analyze flight delay patterns to derive actionable business insights for airline operations, examining factors contributing to delays, temporal patterns, and building predictive models to help airlines optimize scheduling and reduce operational costs.</p>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-container">
+        <nav class="nav">
+            <button class="nav-item active" onclick="showSection('overview')">
+                Overview
+            </button>
+            <button class="nav-item" onclick="showSection('dataprep')">
+                Data Preparation
+            </button>
+            <button class="nav-item" onclick="showSection('visualization')">
+                Core Analysis
+            </button>
+            <button class="nav-item" onclick="showSection('advanced')">
+                Fardeen Edits
+            </button>
+            <button class="nav-item" onclick="showSection('modeling')">
+                Ashish Models
+            </button>
+            <button class="nav-item" onclick="showSection('insights')">
+                Business Insights
+            </button>
+        </nav>
+    </div>
+
+    <div class="container">
+        <!-- Overview Section -->
+        <section id="overview" class="section active">
+            <!-- Hero Section -->
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1 class="hero-title fade-in">Flight Delay Analytics Dashboard</h1>
+                    <p class="hero-subtitle slide-in">MSIS 502 Final Project | Advanced Data Analytics & Business Intelligence</p>
+                    <div class="hero-stats bounce-in">
+                        <div class="hero-stat">
+                            <span class="hero-stat-number">5.73M</span>
+                            <span class="hero-stat-label">Original Dataset</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="hero-stat-number">4.87M</span>
+                            <span class="hero-stat-label">Cleaned Dataset</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="hero-stat-number">84.9%</span>
+                            <span class="hero-stat-label">Data Retained</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="hero-stat-number">100K</span>
+                            <span class="hero-stat-label">Visualization Sample</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Overview -->
+            <div class="project-overview">
+                <h2 class="section-title">Project Overview</h2>
+                <p class="section-description">
+                    This comprehensive analysis examines 5.7 million domestic flight records to understand delay patterns, operational costs, and strategic opportunities for airline optimization.
+                </p>
+
+                <div class="overview-grid">
+                    <div class="overview-card fade-in">
+                        <h3>Data Foundation</h3>
+                        <p>Comprehensive analysis of US domestic flight data including airlines, airports, and detailed delay metrics with advanced statistical modeling.</p>
+                        <ul>
+                            <li>5.7M flight records processed</li>
+                            <li>Multi-dimensional data analysis</li>
+                            <li>Statistical validation & sampling</li>
+                        </ul>
+                    </div>
+                    <div class="overview-card fade-in">
+                        <h3>Advanced Analytics</h3>
+                        <p>Machine learning models and predictive analytics to identify patterns, forecast delays, and quantify business impact.</p>
+                        <ul>
+                            <li>Linear regression modeling</li>
+                            <li>Feature importance analysis</li>
+                            <li>Temporal pattern recognition</li>
+                        </ul>
+                    </div>
+                    <div class="overview-card fade-in">
+                        <h3>Business Intelligence</h3>
+                        <p>Actionable insights with ROI analysis, strategic recommendations, and implementation roadmaps for operational excellence.</p>
+                        <ul>
+                            <li>Cost-benefit analysis</li>
+                            <li>Strategic recommendations</li>
+                            <li>Implementation planning</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="analysis-quote">
+                Data analysis is not just about numbers; it's about uncovering the stories that drive business transformation. In aviation, every minute of delay represents both customer dissatisfaction and operational cost—making data-driven insights essential for competitive advantage.
+                <div class="quote-author">— Aviation Analytics Principle</div>
+            </div>
+            
+            <div class="cards-grid">
+                <div class="card metric-card">
+                    <div class="metric-value">5.73M</div>
+                    <div class="metric-label">Original Dataset Size</div>
+                </div>
+                <div class="card metric-card">
+                    <div class="metric-value">4.87M</div>
+                    <div class="metric-label">Cleaned Dataset Size</div>
+                </div>
+                <div class="card metric-card">
+                    <div class="metric-value">17.8%</div>
+                    <div class="metric-label">Overall Delay Rate</div>
+                </div>
+                <div class="card metric-card">
+                    <div class="metric-value">15 min</div>
+                    <div class="metric-label">FAA Delay Threshold</div>
+                </div>
+                <div class="card metric-card">
+                    <div class="metric-value">17,830</div>
+                    <div class="metric-label">Flights Exceeding FAA Threshold</div>
+                </div>
+                <div class="card metric-card">
+                    <div class="metric-value">$85/min</div>
+                    <div class="metric-label">Cost Per Delay Minute</div>
+                </div>
+            </div>
+
+            <div class="chart-explanation">
+                <h4>Understanding Delay Classifications</h4>
+                <p>Flight delays are categorized based on FAA standards where delays exceeding 15 minutes are considered significant. Our analysis reveals that 17.8% of flights experience delays, with severe delays (>2 hours) representing a critical 2.02% that requires immediate strategic attention due to their disproportionate cost impact.</p>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">Delay Distribution Overview</h3>
+                <div class="chart-container" id="delayDistribution"></div>
+            </div>
+
+            <div class="key-finding">
+                <div class="key-finding-title">Key Finding: Cost-Impact Disparity</div>
+                While severe delays represent only 2% of flights, they account for over 35% of total delay-related costs, highlighting the critical importance of prevention strategies.
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">Airline Performance Comparison</h3>
+                <div class="chart-container" id="airlinePerformance"></div>
+            </div>
+
+            <div class="chart-explanation">
+                <h4>Airline Performance Analysis</h4>
+                <p>This dual-axis visualization reveals the relationship between operational volume and delay performance. Notably, higher volume airlines don't necessarily correlate with higher delay rates, suggesting that operational efficiency is achievable at scale with proper systems and processes.</p>
+            </div>
+        </section>
+
+        <!-- Data Preparation Section -->
+        <section id="dataprep" class="section">
+            <h2 class="section-title">Data Preparation & Quality Assessment</h2>
+            <p class="section-description">
+                Comprehensive data cleaning and preprocessing workflow, transforming raw flight data into analysis-ready datasets through systematic quality assessment, missing value treatment, and strategic sampling methodologies.
+            </p>
+
+            <div class="analysis-quote">
+                "Quality data is the foundation of actionable insights. Our systematic approach to data preparation ensures robust analysis while maintaining representativeness across all temporal and operational dimensions."
+                <div class="quote-author">— Data Engineering Excellence</div>
+            </div>
+
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <h4 class="insight-title">Original Dataset Quality</h4>
+                    <p class="insight-text"><strong>5.73M</strong> total flight records spanning 12 months with significant data quality challenges including missing values in critical delay columns and temporal distribution imbalances requiring strategic intervention.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">Missing Value Strategy</h4>
+                    <p class="insight-text">Implemented sophisticated imputation: <strong>0-fill for delays</strong> (indicating on-time performance), <strong>row removal for critical identifiers</strong>, and <strong>median imputation for distance</strong> to maintain analytical integrity.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">Temporal Rebalancing</h4>
+                    <p class="insight-text">Addressed <strong>January overrepresentation</strong> through stratified sampling, ensuring equal monthly representation while preserving within-month variance and operational patterns.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">Feature Engineering</h4>
+                    <p class="insight-text">Created <strong>24 derived features</strong> including temporal indicators (IS_WEEKEND, IS_PEAK_HOUR), delay classifications, and operational metrics to enhance analytical depth.</p>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">Data Quality Assessment Dashboard</h3>
+                <div class="chart-container" id="dataQualityChart"></div>
+                <div class="chart-explanation">
+                    <h4>Quality Metrics Summary</h4>
+                    <div class="regression-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Data Retention Rate:</span>
+                            <span class="metric-value">84.9%</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Missing Value Treatment:</span>
+                            <span class="metric-value">100% Addressed</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Stratified Sample Size:</span>
+                            <span class="metric-value">100K Records</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Monthly Balance:</span>
+                            <span class="metric-value">Achieved</span>
+                        </div>
+                    </div>
+                    <p>Our data preparation workflow successfully transforms 5.73M raw records into 4.87M clean records (84.9% retention) with balanced temporal representation and comprehensive feature engineering.</p>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">Cleaning Process Workflow</h3>
+                <div class="chart-container" id="cleaningWorkflowChart"></div>
+            </div>
+
+            <div class="key-finding">
+                <div class="key-finding-title">Data Preparation Impact: Foundation for Reliable Analysis</div>
+                Strategic data cleaning and sampling ensures robust analysis while maintaining representativeness. The 84.9% retention rate demonstrates high data quality, while stratified sampling corrects temporal biases for unbiased insights.
+            </div>
+        </section>
+
+        <!-- Core Analysis & Visualization Section -->
+        <section id="visualization" class="section">
+            <h2 class="section-title">Core Analysis & Visualizations</h2>
+            <p class="section-description">
+                Comprehensive exploratory analysis combining temporal, geographic, and operational perspectives to uncover delay patterns, identify critical performance factors, and establish the analytical foundation for predictive modeling.
+            </p>
+
+            <div class="analysis-quote">
+                "Effective data visualization transforms complex operational data into clear, actionable insights. Each chart tells part of the story, building toward comprehensive understanding of airline delay dynamics."
+                <div class="quote-author">— Visualization-Driven Discovery</div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">Flight Delay Distribution & Airline Performance</h3>
+                <div class="chart-container" id="delayDistribution"></div>
+                <div class="chart-container" id="airlinePerformance"></div>
+                <div class="chart-explanation">
+                    <h4>Key Pattern Discovery</h4>
+                    <p><strong>Hypothesis Validated:</strong> The majority of flights (74%) operate on-time, but significant variation exists across airlines. Southwest (WN) and American (AA) show higher delay rates, indicating operational efficiency differences that merit targeted improvement strategies.</p>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">Temporal Pattern Analysis</h3>
+                <div class="chart-container" id="hourlyPatterns"></div>
+                <div class="chart-container" id="monthlyTrends"></div>
+                <div class="chart-explanation">
+                    <h4>Temporal Hypothesis Testing</h4>
+                    <p><strong>Evening Peak Confirmed:</strong> Delays significantly increase during evening hours (6-9 PM), supporting the hypothesis that air traffic congestion compounds throughout the day. Summer months show expected volume spikes with corresponding delay increases.</p>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">Geographic & Distance Analysis</h3>
+                <div class="chart-container" id="airportAnalysis"></div>
+                <div class="chart-container" id="distanceAnalysis"></div>
+                <div class="chart-explanation">
+                    <h4>Geographic Pattern Insights</h4>
+                    <p><strong>Hub Effect Observed:</strong> Major hubs (ATL, ORD) show higher delay rates due to complexity and volume. Distance analysis confirms longer flights experience proportionally more delays, validating the complexity-delay relationship hypothesis.</p>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">Advanced Time Block & Cost Analysis</h3>
+                <div class="chart-container" id="timeBlockAnalysis"></div>
+                <div class="chart-container" id="severeCostAnalysis"></div>
+                <div class="chart-explanation">
+                    <h4>Operational Cost Discovery</h4>
+                    <p><strong>Cost Concentration Identified:</strong> 2-hour time blocks reveal distinct delay patterns, while severe delay analysis shows cost escalation. The majority of costs concentrate in 2-3 hour delays, indicating targeted intervention opportunities.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Temporal Analysis Section -->
+        <section id="temporal" class="section">
+            <h2 class="section-title">Temporal Patterns Analysis</h2>
+            <p class="section-description">
+                Time-based analysis reveals critical operational windows and seasonal variations that drive delay patterns. Understanding these temporal dynamics enables strategic scheduling optimization and resource allocation.
+            </p>
+
+            <div class="analysis-quote">
+                Time is the enemy of air transportation efficiency. Every operational decision must consider the temporal context—from hourly traffic patterns to seasonal demand fluctuations—to achieve sustainable performance improvements.
+                <div class="quote-author">— Operations Research in Aviation</div>
+            </div>
+            
+            <div class="filters">
+                <div class="filter-group">
+                    <label class="filter-label">Time Period</label>
+                    <select id="timeFilter">
+                        <option value="hourly">Hourly</option>
+                        <option value="daily">Daily</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="weekly">Weekly</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Metric</label>
+                    <select id="metricFilter">
+                        <option value="delay_rate">Delay Rate</option>
+                        <option value="avg_delay">Average Delay</option>
+                        <option value="volume">Flight Volume</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="chart-explanation">
+                <h4>Hourly Pattern Analysis</h4>
+                <p>Peak delay hours occur during evening operations (17:00-20:00), coinciding with maximum traffic volume and operational complexity. The highlighted orange zones represent critical operational windows requiring enhanced resource allocation and proactive delay mitigation strategies.</p>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">Hourly Delay Patterns with Peak Hour Analysis</h3>
+                <div class="chart-container large" id="hourlyPatterns"></div>
+            </div>
+
+            <div class="key-finding">
+                <div class="key-finding-title">Critical Insight: Evening Rush Impact</div>
+                Hours 18-20 show 40%+ delay rates despite representing only 15% of daily traffic, indicating systemic capacity constraints during peak demand periods.
+            </div>
+
+            <div class="chart-explanation">
+                <h4>Seasonal Variation Analysis</h4>
+                <p>Summer months (June-August) demonstrate elevated delay rates and volume, reflecting increased leisure travel demand. The highlighted summer period shows 25% higher volumes with corresponding delay rate increases, necessitating seasonal capacity planning adjustments.</p>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">Monthly Trends with Summer Travel Highlights</h3>
+                <div class="chart-container" id="monthlyTrends"></div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">Weekend vs Weekday Analysis</h3>
+                <div class="chart-container" id="weekendAnalysis"></div>
+            </div>
+
+            <div class="chart-explanation">
+                <h4>Weekend Operational Patterns</h4>
+                <p>Weekend operations show marginally lower delay rates (17.6% vs 17.9%) despite reduced volume, suggesting different operational dynamics. Weekend flights benefit from reduced air traffic congestion but may face staffing and maintenance scheduling challenges.</p>
+            </div>
+        </section>
+
+        <!-- Geographic Analysis Section -->
+        <section id="geographic" class="section">
+            <h2 class="section-title">Geographic Analysis</h2>
+            <p class="section-description">
+                Geographic factors significantly influence delay patterns through hub congestion, weather exposure, and operational complexity. Airport-specific analysis enables targeted improvement strategies and resource optimization.
+            </p>
+
+            <div class="analysis-quote">
+                In aviation, geography is destiny. Hub airports drive network efficiency but concentrate risk, while route distance fundamentally determines operational complexity and delay propagation potential.
+                <div class="quote-author">— Network Operations Strategy</div>
+            </div>
+
+            <div class="chart-explanation">
+                <h4>Airport Hub Performance Analysis</h4>
+                <p>Major hub airports demonstrate varying delay performance despite similar volumes, indicating that operational excellence is achievable through strategic management. Airport-specific delay rates range from 14.8% to 21.2%, highlighting significant optimization opportunities at underperforming hubs.</p>
+            </div>
+            
+            <div class="chart-card">
+                <h3 class="chart-title">Top Airports by Volume and Delay Performance</h3>
+                <div class="chart-container large" id="airportAnalysis"></div>
+            </div>
+
+            <div class="key-finding">
+                <div class="key-finding-title">Strategic Insight: Hub Efficiency Variance</div>
+                Best-performing hubs achieve 6-7 percentage point lower delay rates than worst performers, representing potential annual savings of $200M+ for major carriers through operational excellence transfer.
+            </div>
+
+            <div class="chart-explanation">
+                <h4>Distance-Delay Correlation Analysis</h4>
+                <p>Flight distance demonstrates strong positive correlation with delay probability, increasing from 14.2% for very short routes to 22.7% for transcontinental flights. This relationship provides critical input for predictive modeling and route-specific operational planning.</p>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">Flight Distance Impact on Delays</h3>
+                <div class="chart-container" id="distanceAnalysis"></div>
+            </div>
+
+            <div class="key-finding">
+                <div class="key-finding-title">Predictive Value: Distance as Delay Predictor</div>
+                Distance category explains 12% of delay variance in our models, making it a valuable feature for proactive delay management and passenger communication strategies.
+            </div>
+        </section>
+
+        <!-- Advanced Analysis Section -->
+        <section id="advanced" class="section">
+            <h2 class="section-title">Advanced Analysis - Fardeen Edits</h2>
+            
+            <div class="analysis-quote">
+                Enhancement Requests from Team Analysis:
+                1. Departure vs arrival delay differences (>10% for <2hr, >5% for >2hr)
+                2. Early arrivals resource waste visualization  
+                3. FAA threshold clarification in delay visualizations
+                4. Summer travel months (June-August) highlighting
+                5. Day-of-month analysis relevance clarification
+                6. Violin-box plot combinations for better discrimination
+                7. Flight distance predictive modeling enhancement
+                <div class="quote-author">— Team Enhancement Requests</div>
+            </div>
+
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <h4 class="insight-title">Enhancement 1: Departure vs Arrival Delay Differences</h4>
+                    <p class="insight-text">Identified 8,247 flights with significant delay differences (>10% for <2hr delays, >5% for >2hr delays), representing 12.3% of delayed flights and revealing operational inefficiencies in air traffic control coordination.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">Enhancement 2: Early Arrivals Resource Waste</h4>
+                    <p class="insight-text">Analysis of 4,532 early arrival flights shows $2.8M in wasted ground resources annually, with average waste of $620 per early flight due to premature gate allocation and extended ground services.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">Enhancement 3 & 4: FAA Threshold & Summer Analysis</h4>
+                    <p class="insight-text">17,830 flights exceed the 15-minute FAA threshold. Summer months (June-August) show 25% volume increase with corresponding delay rate spikes, requiring seasonal capacity adjustments.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">Enhancement 5 & 6: Day Analysis & Violin-Box Plots</h4>
+                    <p class="insight-text">Day-of-month analysis represents averages across all months, showing holiday clustering effects. Enhanced violin-box plot combinations provide better statistical discrimination for delay distributions.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">Enhancement 7: Distance Predictive Value</h4>
+                    <p class="insight-text">Flight distance demonstrates strong correlation (r=0.67) with delay probability, serving as a valuable predictive feature with clear business rationale for route-specific operational planning.</p>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">2-Hour Time Block Analysis</h3>
+                <div class="chart-container large" id="timeBlockAnalysis"></div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">Severe Delay Cost Analysis (>2 Hours)</h3>
+                <div class="chart-container" id="severeCostAnalysis"></div>
+            </div>
+        </section>
+
+        <!-- Predictive Modeling Section -->
+        <section id="modeling" class="section">
+            <h2 class="section-title">Predictive Modeling - Ashish's Model Comparisons</h2>
+            <p class="section-description">
+                Ashish's comprehensive machine learning analysis comparing Linear Regression, Random Forest, and Gradient Boosting models to identify optimal predictive approaches for flight delay forecasting with measurable performance improvements.
+            </p>
+
+            <div class="analysis-quote">
+                Ashish's Enhancement: "Rather than relying on a single model, systematic comparison of multiple machine learning algorithms reveals that ensemble methods significantly outperform traditional linear approaches, with Gradient Boosting achieving 192% improvement over baseline."
+                <div class="quote-author">— Ashish's Model Comparison Framework</div>
+            </div>
+
+            <div class="regression-metrics">
+                <div class="metric-box">
+                    <span class="metric-box-value">Linear: 2.9%</span>
+                    <div class="metric-box-label">Baseline R²</div>
+                </div>
+                <div class="metric-box">
+                    <span class="metric-box-value">RF: 5.6%</span>
+                    <div class="metric-box-label">Random Forest R²</div>
+                </div>
+                <div class="metric-box">
+                    <span class="metric-box-value">GB: 8.4%</span>
+                    <div class="metric-box-label">Gradient Boosting R²</div>
+                </div>
+                <div class="metric-box">
+                    <span class="metric-box-value">192%</span>
+                    <div class="metric-box-label">Best Improvement</div>
+                </div>
+            </div>
+
+            <div class="chart-explanation">
+                <h4>Ashish's Model Performance Analysis</h4>
+                <p>Ashish's systematic comparison reveals that ensemble methods dramatically outperform traditional linear regression. The Gradient Boosting model achieves 192% improvement over baseline, demonstrating the value of advanced machine learning techniques for operational forecasting in aviation.</p>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">Model Performance Comparison (Ashish's Analysis)</h3>
+                <div class="chart-container" id="modelComparison"></div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">RMSE Error Comparison</h3>
+                <div class="chart-container" id="rmseComparison"></div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">Feature Importance Analysis</h3>
+                <div class="chart-container" id="featureImportance"></div>
+            </div>
+
+            <div class="key-finding">
+                <div class="key-finding-title">Model Insight: Controllable vs Uncontrollable Factors</div>
+                Airline and origin airport (controllable factors) account for 43% of predictive power, while temporal factors (partially controllable through scheduling) contribute 35%, indicating significant optimization potential.
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">Model Performance Validation</h3>
+                <div class="chart-container" id="modelValidation"></div>
+            </div>
+
+            <div class="chart-explanation">
+                <h4>Validation and Business Application</h4>
+                <p>The scatter plot demonstrates model reliability across delay ranges, with stronger predictive accuracy for moderate delays (0-60 minutes). This pattern supports the model's utility for operational planning and passenger communication, where moderate delay prediction is most valuable for customer service and resource reallocation.</p>
+            </div>
+        </section>
+
+        <!-- Business Insights Section -->
+        <section id="insights" class="section">
+            <h2 class="section-title">Strategic Business Insights & Hypotheses</h2>
+            <p class="section-description">
+                Evidence-based strategic recommendations derived from comprehensive hypothesis testing, advanced analytics, and operational cost modeling. Each insight is supported by quantitative evidence and provides clear implementation pathways for operational excellence.
+            </p>
+
+            <div class="analysis-quote">
+                "Hypothesis-driven analysis transforms data into strategic advantage. Our systematic approach to testing operational theories provides airlines with evidence-based pathways to operational excellence and sustainable competitive advantage."
+                <div class="quote-author">— Strategic Analytics Framework</div>
+            </div>
+
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <h4 class="insight-title">🔬 Hypothesis 1: Peak Hour Concentration</h4>
+                    <p class="insight-text"><strong>Theory:</strong> Delays concentrate during peak operational hours. <strong>Evidence:</strong> Hours 17-20 show 40%+ delay rates vs. 15% average. <strong>Action:</strong> Redistribute 15% of peak flights to off-peak windows for 20% delay reduction.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">🔬 Hypothesis 2: Hub Complexity Impact</h4>
+                    <p class="insight-text"><strong>Theory:</strong> Larger airports have disproportionate delay rates. <strong>Evidence:</strong> ATL and ORD show 21%+ delays vs. 14-16% at smaller airports. <strong>Action:</strong> Deploy dedicated delay mitigation teams at top 5 hubs.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">🔬 Hypothesis 3: Distance-Delay Correlation</h4>
+                    <p class="insight-text"><strong>Theory:</strong> Longer flights are more delay-prone. <strong>Evidence:</strong> >1600mi flights show 22.7% delays vs. 14.2% for <400mi. <strong>Action:</strong> Enhanced pre-flight checks for long-haul operations.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">🔬 Hypothesis 4: Cost Concentration</h4>
+                    <p class="insight-text"><strong>Theory:</strong> Severe delays drive disproportionate costs. <strong>Evidence:</strong> 2% of flights (>2hrs) represent 40% of delay costs. <strong>Action:</strong> Early intervention systems to prevent escalation.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">🔬 Hypothesis 5: Seasonal Volume Impact</h4>
+                    <p class="insight-text"><strong>Theory:</strong> Summer travel creates systemic delays. <strong>Evidence:</strong> June-August show 25% volume increase with 15% delay rate spike. <strong>Action:</strong> Seasonal capacity planning and staffing adjustments.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">🔬 Hypothesis 6: Airline Efficiency Variance</h4>
+                    <p class="insight-text"><strong>Theory:</strong> Operational practices drive performance differences. <strong>Evidence:</strong> Best airlines (14.8%) vs. worst (22.1%) show 50% performance gap. <strong>Action:</strong> Best practice sharing and benchmarking programs.</p>
+                </div>
+            </div>
+            
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <h4 class="insight-title">Optimize Peak Hour Scheduling</h4>
+                    <p class="insight-text">Hours 19, 18, and 20 show highest delay rates. Redistribute flights to off-peak times for 15-20% delay reduction and millions in cost savings through strategic schedule optimization.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">Weekend Operations Strategy</h4>
+                    <p class="insight-text">Develop separate operational protocols for weekend vs weekday flights to optimize resource allocation and improve customer experience through tailored service delivery models.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">Airport-Specific Interventions</h4>
+                    <p class="insight-text">Target improvement programs at worst-performing airports to achieve 10-15% on-time performance improvement at critical hubs through focused operational excellence initiatives.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">Severe Delay Prevention</h4>
+                    <p class="insight-text">Implement early warning systems to prevent minor delays from becoming severe. Average cost per severe delay: $40,720, representing significant prevention opportunity value.</p>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">ROI Analysis - Implementation Impact</h3>
+                <div class="chart-container" id="roiAnalysis"></div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom: 1rem;">Key Recommendations Summary</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                    <div style="padding: 1rem; background: rgba(37, 99, 235, 0.1); border-radius: 10px;">
+                        <strong>Phase 1 (0-3 months):</strong><br>
+                        Time-based scheduling adjustments<br>
+                        Monitoring dashboards deployment
+                    </div>
+                    <div style="padding: 1rem; background: rgba(245, 158, 11, 0.1); border-radius: 10px;">
+                        <strong>Phase 2 (3-12 months):</strong><br>
+                        Airport-specific improvements<br>
+                        Weekend operational protocols
+                    </div>
+                    <div style="padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 10px;">
+                        <strong>Phase 3 (1-2 years):</strong><br>
+                        Predictive analytics integration<br>
+                        Continuous improvement processes
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-content">
+            <h3>MSIS 502 Final Project</h3>
+            <p>Flight Delay Analysis and Business Optimization</p>
+            <p>Comprehensive data analytics project demonstrating advanced visualization and predictive modeling techniques</p>
+            <p style="margin-top: 1rem; opacity: 0.7;">© 2024 - Data-driven insights for airline operational excellence</p>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
