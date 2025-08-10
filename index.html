@@ -712,12 +712,21 @@
     <div class="header">
         <div class="header-content">
             <h1>Flight Delay Analytics</h1>
-            <p>Comprehensive Analysis of US Domestic Flight Delays | MSIS 502 Final Project</p>
+            <p>MSIS 502 Final Project | Team 8 | Comprehensive Business Intelligence Analysis</p>
         </div>
     </div>
 
     <div class="subtitle">
-        <p><strong>Project Objective:</strong> Analyze flight delay patterns to derive actionable business insights for airline operations, examining factors contributing to delays, temporal patterns, and building predictive models to help airlines optimize scheduling and reduce operational costs.</p>
+        <div class="project-summary">
+            <h3>🎯 Business Problem Statement</h3>
+            <p><strong>Challenge:</strong> Flight delays cost the U.S. aviation industry billions annually while significantly impacting customer satisfaction and operational efficiency. Airlines need data-driven insights to understand delay patterns, identify root causes, and implement targeted interventions.</p>
+            
+            <h3>📊 Team 8 Analytical Approach</h3>
+            <p><strong>Objective:</strong> Transform 5.73M raw flight records into actionable business intelligence through comprehensive data mining, statistical analysis, and machine learning to optimize airline operations and reduce costs.</p>
+            
+            <h3>🔬 Key Research Questions</h3>
+            <p><strong>Focus Areas:</strong> When do delays occur? Which factors drive delays? How can airlines predict and prevent delays? What's the financial impact and ROI of interventions?</p>
+        </div>
     </div>
 
     <!-- Navigation -->
@@ -877,8 +886,8 @@
             </p>
 
             <div class="analysis-quote">
-                "Quality data is the foundation of actionable insights. Our systematic approach to data preparation ensures robust analysis while maintaining representativeness across all temporal and operational dimensions."
-                <div class="quote-author">— Data Engineering Excellence</div>
+                "Team 8's rigorous data cleaning methodology transformed 5.73M raw records into 4.87M high-quality records, achieving 84.9% retention while addressing 86,153 missing departure delays and 105,071 missing arrival delays through sophisticated imputation strategies."
+                <div class="quote-author">— Team 8 Data Engineering Report</div>
             </div>
 
             <div class="insights-grid">
@@ -1216,6 +1225,56 @@
             <div class="chart-explanation">
                 <h4>Validation and Business Application</h4>
                 <p>The scatter plot demonstrates model reliability across delay ranges, with stronger predictive accuracy for moderate delays (0-60 minutes). This pattern supports the model's utility for operational planning and passenger communication, where moderate delay prediction is most valuable for customer service and resource reallocation.</p>
+            </div>
+        </section>
+
+        <!-- Team 8 Conclusions Section -->
+        <section id="conclusions" class="section">
+            <h2 class="section-title">Team 8 Comprehensive Analysis Conclusions</h2>
+            <p class="section-description">
+                Synthesis of Team 8's complete analytical journey from 5.73M raw records to strategic recommendations, integrating data quality assessment, exploratory analysis, predictive modeling, and business intelligence to deliver actionable insights for airline operations.
+            </p>
+
+            <div class="analysis-quote">
+                "Through systematic analysis of flight delay patterns, Team 8 has transformed complex operational data into clear strategic pathways for airline optimization, demonstrating the power of data-driven decision making in complex operational environments."
+                <div class="quote-author">— Team 8 Final Analysis Summary</div>
+            </div>
+
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <h4 class="insight-title">📊 Data Foundation Success</h4>
+                    <p class="insight-text"><strong>5.73M → 4.87M records (84.9% retention)</strong><br>Successfully processed massive dataset with sophisticated missing value treatment: 86,153 departure delays and 105,071 arrival delays imputed using domain knowledge (0-fill for on-time assumption).</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">🔍 Pattern Discovery</h4>
+                    <p class="insight-text"><strong>Clear temporal and operational patterns identified</strong><br>Evening hours (17-20) show 40%+ delay rates vs 15% average. Major hubs (ATL, ORD) demonstrate 21%+ delays. Distance correlation confirmed: >1600mi flights = 22.7% delays vs <400mi = 14.2%.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">🤖 Predictive Modeling</h4>
+                    <p class="insight-text"><strong>Ashish's Model Comparison: 192% improvement</strong><br>Linear Regression (2.9%) → Random Forest (5.6%) → Gradient Boosting (8.4% R²). Ensemble methods significantly outperform traditional approaches, with 20.2 min RMSE achieved.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">🎯 Fardeen's Enhanced Analysis</h4>
+                    <p class="insight-text"><strong>7 critical enhancements identified</strong><br>8,247 flights with significant delay differences, $2.8M early arrival waste, FAA threshold analysis (17,830 flights), summer peak identification, and violin-box plot optimizations for better discrimination.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">💰 Financial Impact</h4>
+                    <p class="insight-text"><strong>$4.6B annual delay cost quantified</strong><br>2% of flights (>2hrs) represent 40% of costs. $85/minute operational cost established. Severe delays show exponential cost escalation requiring immediate intervention strategies.</p>
+                </div>
+                <div class="insight-card">
+                    <h4 class="insight-title">🚀 Business Transformation</h4>
+                    <p class="insight-text"><strong>Actionable strategies identified</strong><br>Peak hour redistribution (15-20% delay reduction), hub-specific interventions, seasonal capacity planning, and early warning systems. Potential $684M annual savings through targeted improvements.</p>
+                </div>
+            </div>
+
+            <div class="key-finding">
+                <div class="key-finding-title">Team 8 Strategic Recommendation: Integrated Operational Excellence Framework</div>
+                Deploy a comprehensive delay management system combining predictive analytics (Gradient Boosting), real-time monitoring, peak hour optimization, and hub-specific interventions. Expected ROI: 400% within 18 months through systematic application of data-driven insights.
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">Team 8 Analysis Journey: From Data to Decisions</h3>
+                <div class="chart-container" id="team8JourneyChart"></div>
             </div>
         </section>
 

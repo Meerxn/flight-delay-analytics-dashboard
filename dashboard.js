@@ -131,6 +131,7 @@ class FlightDelayDashboard {
         this.createRMSEComparisonChart();
         this.createFeatureImportanceChart();
         this.createModelValidationChart();
+        this.createTeam8JourneyChart();
         this.createROIAnalysisChart();
     }
 
@@ -998,6 +999,92 @@ class FlightDelayDashboard {
         Plotly.newPlot('rmseComparison', [trace], layout, {responsive: true});
     }
 
+    // Team 8 Analysis Journey Chart
+    createTeam8JourneyChart() {
+        const analysisStages = {
+            stages: ['Data Collection\n5.73M Records', 'Quality Assessment\n15.1% Missing', 'Data Cleaning\n84.9% Retained', 'EDA & Patterns\n9 Visualizations', 'Fardeen Edits\n7 Enhancements', 'Ashish Models\n3 Algorithms', 'Business Insights\n6 Hypotheses', 'Strategic Recommendations'],
+            complexity: [2, 4, 5, 3, 4, 5, 3, 2], // Complexity 1-5
+            businessValue: [10, 20, 40, 60, 75, 85, 95, 100], // Cumulative business value %
+            keyMetrics: ['5.73M', '867K', '4.87M', '9 plots', '7 edits', '192%', '6 tests', '$684M']
+        };
+
+        const trace1 = {
+            x: analysisStages.stages,
+            y: analysisStages.complexity,
+            type: 'bar',
+            name: 'Analysis Complexity',
+            marker: { 
+                color: analysisStages.complexity.map(c => {
+                    if (c <= 2) return '#10b981';
+                    if (c <= 3) return '#3b82f6';
+                    if (c <= 4) return '#f59e0b';
+                    return '#ef4444';
+                }),
+                opacity: 0.8
+            },
+            text: analysisStages.keyMetrics,
+            textposition: 'outside'
+        };
+
+        const trace2 = {
+            x: analysisStages.stages,
+            y: analysisStages.businessValue,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Cumulative Business Value (%)',
+            line: { color: '#dc2626', width: 4 },
+            marker: { size: 12, color: '#dc2626' },
+            yaxis: 'y2'
+        };
+
+        const layout = {
+            paper_bgcolor: 'white',
+            plot_bgcolor: '#fafbfc',
+            font: { color: '#000000', family: 'Inter', size: 12 },
+            xaxis: { 
+                title: 'Team 8 Analysis Progression',
+                gridcolor: '#f1f3f4',
+                gridwidth: 1
+            },
+            yaxis: { 
+                title: 'Analysis Complexity (1-5)', 
+                side: 'left',
+                gridcolor: '#f1f3f4',
+                gridwidth: 1,
+                zeroline: true,
+                zerolinecolor: '#e5e7eb',
+                zerolinewidth: 1
+            },
+            yaxis2: {
+                title: 'Cumulative Business Value (%)',
+                side: 'right',
+                overlaying: 'y'
+            },
+            annotations: [
+                {
+                    x: 2,
+                    y: 50,
+                    text: 'Data Foundation<br>Complete',
+                    showarrow: true,
+                    arrowhead: 2,
+                    font: { color: '#10b981', size: 10 }
+                },
+                {
+                    x: 5,
+                    y: 90,
+                    text: 'Advanced Analytics<br>Phase',
+                    showarrow: true,
+                    arrowhead: 2,
+                    font: { color: '#ef4444', size: 10 }
+                }
+            ],
+            legend: { orientation: 'h', y: -0.2 },
+            margin: { t: 40, b: 120, l: 70, r: 70 }
+        };
+
+        Plotly.newPlot('team8JourneyChart', [trace1, trace2], layout, {responsive: true});
+    }
+
     // ROI Analysis Chart (Business Insights)
     createROIAnalysisChart() {
         const phases = ['Current State', 'Phase 1\n(0-3 months)', 'Phase 2\n(3-12 months)', 'Phase 3\n(1-2 years)'];
@@ -1134,7 +1221,7 @@ window.addEventListener('resize', function() {
                    'airlinePerformance', 'hourlyPatterns', 'monthlyTrends', 'weekendAnalysis', 
                    'airportAnalysis', 'distanceAnalysis', 'timeBlockAnalysis', 'severeCostAnalysis',
                    'modelComparison', 'rmseComparison', 'featureImportance', 
-                   'modelValidation', 'roiAnalysis'];
+                   'modelValidation', 'team8JourneyChart', 'roiAnalysis'];
     
     charts.forEach(chartId => {
         const element = document.getElementById(chartId);
