@@ -101,7 +101,7 @@ class FlightDelayDashboard {
                 coefficients: [2.34, -1.98, 1.56, 0.89, -0.67, 1.23, 0.45, 0.12, 0.78]
             },
 
-            // Ashish's Model Comparison Data
+            // Model Comparison Data
             modelComparison: {
                 models: ['Linear Regression', 'Random Forest', 'Gradient Boosting'],
                 r2Scores: [0.0288, 0.056, 0.084], // From notebook: 2.9%, 5.6%, 8.4%
@@ -989,7 +989,7 @@ class FlightDelayDashboard {
         Plotly.newPlot('modelValidation', [trace, perfectLine], layout, {responsive: true});
     }
 
-    // Model Comparison Chart (Ashish's Analysis)
+            // Model Comparison Chart
     createModelComparisonChart() {
         const trace1 = {
             x: this.data.modelComparison.models,
@@ -1020,7 +1020,7 @@ class FlightDelayDashboard {
             plot_bgcolor: '#fafbfc',
             font: { color: '#000000', family: 'Inter', size: 12 },
             xaxis: { 
-                title: 'Machine Learning Models (Ashish\'s Analysis)',
+                title: 'Machine Learning Models Performance',
                 gridcolor: '#f1f3f4',
                 gridwidth: 1
             },
@@ -1053,7 +1053,7 @@ class FlightDelayDashboard {
         Plotly.newPlot('modelComparison', [trace1, trace2], layout, {responsive: true});
     }
 
-    // RMSE Comparison Chart (Ashish's Analysis)
+            // RMSE Comparison Chart
     createRMSEComparisonChart() {
         const trace = {
             x: this.data.modelComparison.models,
@@ -1658,7 +1658,7 @@ class FlightDelayDashboard {
     // Team 8 Analysis Journey Chart
     createTeam8JourneyChart() {
         const analysisStages = {
-            stages: ['Data Collection\n5.73M Records', 'Quality Assessment\n15.1% Missing', 'Data Cleaning\n84.9% Retained', 'EDA & Patterns\n9 Visualizations', 'Fardeen Edits\n7 Enhancements', 'Ashish Models\n3 Algorithms', 'Business Insights\n6 Hypotheses', 'Strategic Recommendations'],
+            stages: ['Data Collection\n5.73M Records', 'Quality Assessment\n15.1% Missing', 'Data Cleaning\n84.9% Retained', 'EDA & Patterns\n9 Visualizations', 'Enhanced Analysis\n7 Improvements', 'ML Models\n3 Algorithms', 'Business Insights\n6 Hypotheses', 'Strategic Recommendations'],
             complexity: [2, 4, 5, 3, 4, 5, 3, 2], // Complexity 1-5
             businessValue: [10, 20, 40, 60, 75, 85, 95, 100], // Cumulative business value %
             keyMetrics: ['5.73M', '867K', '4.87M', '9 plots', '7 edits', '192%', '6 tests', '$684M']

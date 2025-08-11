@@ -499,6 +499,110 @@
             margin: 0;
         }
 
+        /* Project Highlights Styles */
+        .project-highlights {
+            margin: 3rem 0;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .project-highlights h3 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .project-highlights > p {
+            color: var(--text-secondary);
+            text-align: center;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .highlights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .highlight-card {
+            background: var(--bg-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .highlight-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+        }
+
+        .highlight-card h4 {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .highlight-card p {
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .key-insights {
+            background: rgba(37, 99, 235, 0.05);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .key-insights h4 {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .key-insights ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .key-insights li {
+            padding: 0.5rem 0;
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .key-insights li:last-child {
+            border-bottom: none;
+        }
+
+        .key-insights li strong {
+            color: var(--primary-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .highlights-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .project-highlights {
+                padding: 1.5rem;
+                margin: 2rem 0;
+            }
+        }
+
         .key-metrics {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -705,7 +809,7 @@
         }
 
         .savings {
-            background: linear-gradient(135deg, #10b981, #059669);
+            background: var(--primary-color);
             color: white;
             padding: 0.5rem 1rem;
             border-radius: 20px;
@@ -725,18 +829,18 @@
         }
 
         .initiative-insight {
-            background: rgba(59, 130, 246, 0.1);
-            border-left: 4px solid #3b82f6;
+            background: rgba(37, 99, 235, 0.1);
+            border-left: 4px solid var(--primary-color);
         }
 
         .initiative-action {
-            background: rgba(245, 158, 11, 0.1);
-            border-left: 4px solid #f59e0b;
+            background: rgba(37, 99, 235, 0.05);
+            border-left: 4px solid var(--primary-color);
         }
 
         .initiative-impact {
-            background: rgba(16, 185, 129, 0.1);
-            border-left: 4px solid #10b981;
+            background: rgba(37, 99, 235, 0.08);
+            border-left: 4px solid var(--primary-color);
         }
 
         .implementation-roadmap {
@@ -817,7 +921,7 @@
         }
 
         .phase-impact {
-            background: linear-gradient(135deg, #10b981, #059669);
+            background: var(--primary-color);
             color: white;
             padding: 0.8rem;
             border-radius: 8px;
@@ -1254,6 +1358,37 @@
 
 
 
+            <!-- Key Project Highlights -->
+            <div class="project-highlights">
+                <h3>Project Overview</h3>
+                <p>Comprehensive analysis of 5.73 million flight records using advanced data science techniques to optimize airline operations and reduce costs through predictive analytics and strategic insights.</p>
+                
+                <div class="highlights-grid">
+                    <div class="highlight-card">
+                        <h4>Data Engineering Excellence</h4>
+                        <p>84.9% data retention through sophisticated cleaning and preprocessing pipeline with feature engineering creating 24 analytical variables.</p>
+                    </div>
+                    <div class="highlight-card">
+                        <h4>Machine Learning Success</h4>
+                        <p>192% improvement over baseline with Gradient Boosting achieving 8.4% R² score, demonstrating ensemble method superiority.</p>
+                    </div>
+                    <div class="highlight-card">
+                        <h4>Business Impact</h4>
+                        <p>$684M projected annual savings through strategic interventions including peak hour optimization and hub-specific improvements.</p>
+                    </div>
+                </div>
+
+                <div class="key-insights">
+                    <h4>Critical Findings</h4>
+                    <ul>
+                        <li><strong>Peak Hours:</strong> 17-20h show 40%+ delay rates vs 15% average</li>
+                        <li><strong>Cost Concentration:</strong> 2% of flights (>2hrs) represent 40% of delay costs</li>
+                        <li><strong>Hub Impact:</strong> ATL and ORD show 21%+ delays vs 14-16% at smaller airports</li>
+                        <li><strong>Distance Effect:</strong> >1600mi flights show 22.7% delays vs 14.2% for <400mi</li>
+                    </ul>
+                </div>
+            </div>
+
         </section>
 
         <!-- Executive Summary Section -->
@@ -1659,14 +1794,14 @@
 
         <!-- Comprehensive Regression Analysis Section -->
         <section id="regression" class="section">
-            <h2 class="section-title">Comprehensive Regression Analysis - Ashish's Advanced Modeling</h2>
+            <h2 class="section-title">Comprehensive Regression Analysis - Advanced Modeling</h2>
             <p class="section-description">
-                Deep dive into Ashish's systematic machine learning approach, featuring comprehensive model comparison, performance evaluation, feature analysis, and validation techniques. This section demonstrates the evolution from simple linear regression to sophisticated ensemble methods.
+                Deep dive into our systematic machine learning approach, featuring comprehensive model comparison, performance evaluation, feature analysis, and validation techniques. This section demonstrates the evolution from simple linear regression to sophisticated ensemble methods.
             </p>
 
             <div class="analysis-quote">
                 "Advanced predictive modeling requires systematic comparison of multiple algorithms, rigorous validation, and deep understanding of feature importance. Our comprehensive approach reveals that ensemble methods achieve 192% improvement over traditional linear regression, providing actionable insights for operational decision-making."
-                <div class="quote-author">— Ashish's Advanced Machine Learning Framework</div>
+                <div class="quote-author">— Advanced Machine Learning Framework</div>
             </div>
 
             <div class="insights-grid">
@@ -1716,12 +1851,12 @@
             </div>
 
             <div class="chart-explanation">
-                <h4>Ashish's Model Performance Analysis</h4>
-                <p>Ashish's systematic comparison reveals that ensemble methods dramatically outperform traditional linear regression. The Gradient Boosting model achieves 192% improvement over baseline, demonstrating the value of advanced machine learning techniques for operational forecasting in aviation.</p>
+                <h4>Model Performance Analysis</h4>
+                <p>Our systematic comparison reveals that ensemble methods dramatically outperform traditional linear regression. The Gradient Boosting model achieves 192% improvement over baseline, demonstrating the value of advanced machine learning techniques for operational forecasting in aviation.</p>
             </div>
 
             <div class="chart-card">
-                <h3 class="chart-title">Model Performance Comparison (Ashish's Analysis)</h3>
+                <h3 class="chart-title">Model Performance Comparison</h3>
                 <div class="chart-container" id="modelComparison"></div>
             </div>
 
@@ -1768,7 +1903,7 @@
             </div>
 
             <div class="key-finding">
-                <div class="key-finding-title">Ashish's Strategic Modeling Conclusion: Ensemble Superiority Demonstrated</div>
+                <div class="key-finding-title">Strategic Modeling Conclusion: Ensemble Superiority Demonstrated</div>
                 Comprehensive analysis proves ensemble methods (Random Forest & Gradient Boosting) consistently outperform linear regression across all metrics. Gradient Boosting achieves optimal balance of accuracy and interpretability, making it the recommended approach for operational delay prediction with 192% improvement over baseline and production-ready deployment capability.
             </div>
         </section>
@@ -1796,7 +1931,7 @@
                 </div>
                 <div class="insight-card">
                     <h4 class="insight-title">🤖 Predictive Modeling</h4>
-                    <p class="insight-text"><strong>Ashish's Model Comparison: 192% improvement</strong><br>Linear Regression (2.9%) → Random Forest (5.6%) → Gradient Boosting (8.4% R²). Ensemble methods significantly outperform traditional approaches, with 20.2 min RMSE achieved.</p>
+                    <p class="insight-text"><strong>Model Comparison: 192% improvement</strong><br>Linear Regression (2.9%) → Random Forest (5.6%) → Gradient Boosting (8.4% R²). Ensemble methods significantly outperform traditional approaches, with 20.2 min RMSE achieved.</p>
                 </div>
                 <div class="insight-card">
                     <h4 class="insight-title">🎯 Fardeen's Enhanced Analysis</h4>
