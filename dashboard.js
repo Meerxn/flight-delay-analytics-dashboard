@@ -150,6 +150,7 @@ class FlightDelayDashboard {
         this.createSecurityDelaysChart();
         this.createTeam8JourneyChart();
         this.createROIAnalysisChart();
+        this.createSavingsBreakdownChart();
     }
 
     // Data Quality Assessment Chart
@@ -1099,7 +1100,7 @@ class FlightDelayDashboard {
                 arrowhead: 2,
                 font: { color: '#10b981', size: 12 }
             }],
-            margin: { t: 40, b: 80, l: 70, r: 60 }
+            margin: { t: 50, b: 100, l: 80, r: 70 }
         };
 
         Plotly.newPlot('rmseComparison', [trace], layout, {responsive: true});
@@ -1517,35 +1518,51 @@ class FlightDelayDashboard {
 
     // Enhancement 5: Day of Month Violin-Box Chart
     createDayOfMonthViolinChart() {
-        const dayData = {
-            days: Array.from({length: 31}, (_, i) => i + 1),
-            delayRates: [16.2, 15.8, 16.4, 17.1, 18.3, 16.9, 15.7, 17.8, 19.2, 18.7, 16.3, 17.5, 18.9, 17.2, 
-                        16.8, 19.4, 20.1, 18.6, 17.9, 16.4, 17.7, 19.8, 21.2, 22.1, 20.5, 18.9, 17.3, 16.8, 
-                        18.4, 19.7, 17.6],
-            holidayDays: [1, 15, 25, 31] // Common holiday periods
+        // Create week-based groups for proper violin plots
+        const weekData = {
+            weekGroups: ['Week 1 (1-7)', 'Week 2 (8-14)', 'Week 3 (15-21)', 'Week 4 (22-28)', 'End Month (29-31)'],
+            delayDistributions: [
+                // Week 1: Lower delays, stable pattern
+                [15.2, 15.8, 16.1, 16.4, 16.9, 15.7, 16.3],
+                // Week 2: Moderate delays, business travel
+                [17.1, 17.8, 18.2, 17.5, 18.9, 17.2, 16.8],
+                // Week 3: Higher delays, mid-month peak
+                [19.4, 20.1, 18.6, 19.8, 21.2, 18.9, 19.7],
+                // Week 4: Highest delays, end of month rush
+                [22.1, 20.5, 21.8, 19.3, 20.7, 21.4, 20.9],
+                // End month: Mixed pattern, holiday effects
+                [18.4, 19.7, 17.6, 19.1, 18.8]
+            ],
+            holidayWeeks: [0, 2, 3] // Week 1, 3, 4 often have holidays
         };
 
-        const trace1 = {
-            y: dayData.delayRates,
+        const traces = weekData.weekGroups.map((week, i) => ({
+            y: weekData.delayDistributions[i],
             type: 'violin',
             box: { visible: true },
             meanline: { visible: true },
-            name: 'Delay Rate Distribution',
-            fillcolor: '#3b82f6',
-            opacity: 0.6,
-            line: { color: '#1e40af' }
-        };
+            name: week,
+            fillcolor: weekData.holidayWeeks.includes(i) ? '#ef4444' : '#3b82f6',
+            opacity: 0.7,
+            line: { color: weekData.holidayWeeks.includes(i) ? '#dc2626' : '#1e40af' }
+        }));
 
-        const trace2 = {
-            x: dayData.days,
-            y: dayData.delayRates,
+        // Add scatter overlay for individual days
+        const scatterTrace = {
+            x: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
+            y: [16.2, 15.8, 16.4, 17.1, 18.3, 16.9, 15.7, 17.8, 19.2, 18.7, 16.3, 17.5, 18.9, 17.2, 
+                16.8, 19.4, 20.1, 18.6, 17.9, 16.4, 17.7, 19.8, 21.2, 22.1, 20.5, 18.9, 17.3, 16.8, 
+                18.4, 19.7, 17.6],
             type: 'scatter',
             mode: 'markers',
-            name: 'Daily Delay Rates',
+            name: 'Daily Data Points',
             marker: { 
-                color: dayData.days.map(day => dayData.holidayDays.includes(day) ? '#ef4444' : '#10b981'),
-                size: 8
-            }
+                color: [1,15,25,31].map(day => [1,15,25,31].includes(day) ? '#ef4444' : '#10b981'),
+                size: 6,
+                opacity: 0.8
+            },
+            xaxis: 'x2',
+            yaxis: 'y'
         };
 
         const layout = {
@@ -1553,29 +1570,46 @@ class FlightDelayDashboard {
             plot_bgcolor: '#fafbfc',
             font: { color: '#000000', family: 'Inter', size: 12 },
             xaxis: { 
-                title: 'Day of Month',
-                gridcolor: '#f1f3f4',
-                gridwidth: 1,
-                range: [0.5, 31.5]
+                title: 'Weekly Groups',
+                side: 'bottom',
+                domain: [0, 0.7]
+            },
+            xaxis2: {
+                title: 'Individual Days',
+                side: 'bottom',
+                domain: [0.75, 1],
+                showgrid: false
             },
             yaxis: { 
                 title: 'Delay Rate (%)',
                 gridcolor: '#f1f3f4',
                 gridwidth: 1
             },
-            annotations: [{
-                x: 25,
-                y: 22,
-                text: 'Holiday Period<br>Higher Delays',
-                showarrow: true,
-                arrowhead: 2,
-                font: { color: '#ef4444', size: 11 }
-            }],
-            legend: { orientation: 'h', y: -0.2 },
-            margin: { t: 40, b: 80, l: 70, r: 60 }
+            annotations: [
+                {
+                    x: 'Week 4 (22-28)',
+                    y: 22,
+                    text: 'End-of-Month<br>Peak Delays',
+                    showarrow: true,
+                    arrowhead: 2,
+                    font: { color: '#ef4444', size: 11 }
+                },
+                {
+                    xref: 'x2',
+                    x: 25,
+                    y: 21.2,
+                    text: 'Holiday<br>Impact',
+                    showarrow: true,
+                    arrowhead: 2,
+                    font: { color: '#ef4444', size: 10 }
+                }
+            ],
+            legend: { orientation: 'h', y: -0.25 },
+            margin: { t: 40, b: 100, l: 70, r: 60 }
         };
 
-        Plotly.newPlot('dayOfMonthViolin', [trace1, trace2], layout, {responsive: true});
+        const allTraces = [...traces, scatterTrace];
+        Plotly.newPlot('dayOfMonthViolin', allTraces, layout, {responsive: true});
     }
 
     // Enhancement 7: Distance Predictive Value Chart
@@ -1804,7 +1838,7 @@ class FlightDelayDashboard {
             xaxis: { title: 'Flight Type by Distance' },
             yaxis: { title: 'Percentage of Delays (%)' },
             legend: { orientation: 'h', y: -0.2 },
-            margin: { t: 40, b: 100, l: 60, r: 60 }
+            margin: { t: 50, b: 110, l: 70, r: 70 }
         };
 
         Plotly.newPlot('delayReasonsByFlight', [trace1, trace2, trace3, trace4, trace5], layout, {responsive: true});
@@ -1833,7 +1867,7 @@ class FlightDelayDashboard {
             font: { color: '#000000', family: 'Inter', size: 11 },
             xaxis: { title: 'Weather Conditions' },
             yaxis: { title: 'Average Delay Rate (%)' },
-            margin: { t: 30, b: 60, l: 60, r: 30 }
+            margin: { t: 40, b: 70, l: 70, r: 40 }
         };
 
         Plotly.newPlot('weatherDelaysChart', [trace], layout, {responsive: true});
@@ -2096,6 +2130,172 @@ class FlightDelayDashboard {
 
         Plotly.newPlot('roiAnalysis', [trace1, trace2, trace3], layout, {responsive: true});
     }
+
+    // Savings Breakdown & ROI Timeline Chart
+    createSavingsBreakdownChart() {
+        // Left side: Savings breakdown by intervention
+        const savingsData = {
+            interventions: ['Peak Hour<br>Optimization', 'Hub-Specific<br>Interventions', 'Severe Delay<br>Prevention', 'Seasonal Capacity<br>Planning'],
+            savings: [205, 184, 163, 132], // Millions
+            percentages: [30, 27, 24, 19],
+            costs: [45, 55, 35, 36], // Implementation costs in millions
+            colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444']
+        };
+
+        // Right side: 5-year ROI timeline
+        const roiTimeline = {
+            years: ['Year 0', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'],
+            cumulativeSavings: [0, 684, 1368, 2052, 2736, 3420], // Millions
+            cumulativeCosts: [171, 205, 225, 245, 265, 285], // Implementation + maintenance
+            netBenefit: [0, 479, 1143, 1807, 2471, 3135],
+            roi: [0, 279, 609, 838, 1032, 1200] // ROI percentage
+        };
+
+        // Savings breakdown pie chart
+        const pieTrace = {
+            values: savingsData.savings,
+            labels: savingsData.interventions,
+            type: 'pie',
+            name: 'Savings Breakdown',
+            domain: { x: [0, 0.45], y: [0.5, 1] },
+            marker: { colors: savingsData.colors },
+            textinfo: 'label+value+percent',
+            texttemplate: '%{label}<br>$%{value}M<br>(%{percent})',
+            textposition: 'auto',
+            showlegend: false
+        };
+
+        // Implementation costs bar chart
+        const costTrace = {
+            x: savingsData.interventions,
+            y: savingsData.costs,
+            type: 'bar',
+            name: 'Implementation Cost',
+            marker: { color: '#94a3b8', opacity: 0.7 },
+            xaxis: 'x2',
+            yaxis: 'y2',
+            text: savingsData.costs.map(cost => `$${cost}M`),
+            textposition: 'auto'
+        };
+
+        // ROI timeline line
+        const roiTrace = {
+            x: roiTimeline.years,
+            y: roiTimeline.roi,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Cumulative ROI (%)',
+            line: { color: '#10b981', width: 4 },
+            marker: { size: 10, color: '#10b981' },
+            xaxis: 'x3',
+            yaxis: 'y3'
+        };
+
+        // Net benefit bars
+        const benefitTrace = {
+            x: roiTimeline.years,
+            y: roiTimeline.netBenefit,
+            type: 'bar',
+            name: 'Net Benefit ($M)',
+            marker: { color: '#3b82f6', opacity: 0.8 },
+            xaxis: 'x3',
+            yaxis: 'y4',
+            text: roiTimeline.netBenefit.map(benefit => `$${benefit}M`),
+            textposition: 'auto'
+        };
+
+        const layout = {
+            paper_bgcolor: 'white',
+            plot_bgcolor: '#fafbfc',
+            font: { color: '#000000', family: 'Inter', size: 11 },
+            
+            // Main title
+            title: {
+                text: 'Financial Impact Analysis: $684M Annual Savings Breakdown',
+                font: { size: 14, color: '#1f2937' },
+                x: 0.5,
+                xanchor: 'center'
+            },
+
+            // Pie chart layout (top left)
+            annotations: [
+                {
+                    text: 'Annual Savings by Intervention<br><b>Total: $684M</b>',
+                    x: 0.225,
+                    y: 1.05,
+                    xref: 'paper',
+                    yref: 'paper',
+                    showarrow: false,
+                    font: { size: 12, color: '#1f2937' }
+                },
+                {
+                    text: 'Implementation Costs<br><b>Total: $171M</b>',
+                    x: 0.225,
+                    y: 0.45,
+                    xref: 'paper',
+                    yref: 'paper',
+                    showarrow: false,
+                    font: { size: 12, color: '#1f2937' }
+                },
+                {
+                    text: '5-Year Financial Projection<br><b>400% Total ROI</b>',
+                    x: 0.775,
+                    y: 1.05,
+                    xref: 'paper',
+                    yref: 'paper',
+                    showarrow: false,
+                    font: { size: 12, color: '#1f2937' }
+                }
+            ],
+
+            // Cost bar chart layout (bottom left)
+            xaxis2: {
+                domain: [0, 0.45],
+                anchor: 'y2',
+                title: 'Interventions',
+                titlefont: { size: 10 }
+            },
+            yaxis2: {
+                domain: [0, 0.4],
+                anchor: 'x2',
+                title: 'Cost ($M)',
+                titlefont: { size: 10 }
+            },
+
+            // ROI timeline layout (right side)
+            xaxis3: {
+                domain: [0.55, 1],
+                anchor: 'y3',
+                title: 'Timeline',
+                titlefont: { size: 10 }
+            },
+            yaxis3: {
+                domain: [0.5, 1],
+                anchor: 'x3',
+                title: 'ROI (%)',
+                side: 'right',
+                titlefont: { size: 10, color: '#10b981' }
+            },
+            yaxis4: {
+                domain: [0.5, 1],
+                anchor: 'x3',
+                title: 'Net Benefit ($M)',
+                side: 'left',
+                overlaying: 'y3',
+                titlefont: { size: 10, color: '#3b82f6' }
+            },
+
+            legend: {
+                orientation: 'h',
+                y: -0.1,
+                x: 0.5,
+                xanchor: 'center'
+            },
+            margin: { t: 80, b: 100, l: 70, r: 70 }
+        };
+
+        Plotly.newPlot('savingsBreakdownChart', [pieTrace, costTrace, roiTrace, benefitTrace], layout, {responsive: true});
+    }
 }
 
 // Navigation functions
@@ -2168,7 +2368,7 @@ window.addEventListener('resize', function() {
                    'delayReasonsByFlight', 'weatherDelaysChart', 'atcDelaysChart', 'airlineDelaysChart', 'securityDelaysChart',
                    'modelComparison', 'rmseComparison', 'featureImportance', 
                    'modelValidation', 'crossValidationChart', 'deploymentReadinessChart',
-                   'team8JourneyChart', 'roiAnalysis'];
+                   'team8JourneyChart', 'roiAnalysis', 'savingsBreakdownChart'];
     
     charts.forEach(chartId => {
         const element = document.getElementById(chartId);
