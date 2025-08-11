@@ -2157,11 +2157,12 @@ class FlightDelayDashboard {
             labels: savingsData.interventions,
             type: 'pie',
             name: 'Savings Breakdown',
-            domain: { x: [0, 0.45], y: [0.5, 1] },
+            domain: { x: [0, 0.42], y: [0.52, 1] },
             marker: { colors: savingsData.colors },
             textinfo: 'label+value+percent',
             texttemplate: '%{label}<br>$%{value}M<br>(%{percent})',
             textposition: 'auto',
+            textfont: { size: 9 },
             showlegend: false
         };
 
@@ -2175,7 +2176,8 @@ class FlightDelayDashboard {
             xaxis: 'x2',
             yaxis: 'y2',
             text: savingsData.costs.map(cost => `$${cost}M`),
-            textposition: 'auto'
+            textposition: 'outside',
+            textfont: { size: 8 }
         };
 
         // ROI timeline line
@@ -2200,98 +2202,94 @@ class FlightDelayDashboard {
             marker: { color: '#3b82f6', opacity: 0.8 },
             xaxis: 'x3',
             yaxis: 'y4',
-            text: roiTimeline.netBenefit.map(benefit => `$${benefit}M`),
-            textposition: 'auto'
+            text: roiTimeline.netBenefit.map(benefit => benefit > 0 ? `$${benefit}M` : ''),
+            textposition: 'outside',
+            textfont: { size: 8 }
         };
 
         const layout = {
             paper_bgcolor: 'white',
             plot_bgcolor: '#fafbfc',
-            font: { color: '#000000', family: 'Inter', size: 11 },
+            font: { color: '#000000', family: 'Inter', size: 10 },
             
-            // Main title
-            title: {
-                text: 'Financial Impact Analysis: $684M Annual Savings Breakdown',
-                font: { size: 14, color: '#1f2937' },
-                x: 0.5,
-                xanchor: 'center'
-            },
-
-            // Pie chart layout (top left)
+            // Remove main title to save space
+            
+            // Pie chart layout (top left) - adjusted domains for better spacing
             annotations: [
                 {
                     text: 'Annual Savings by Intervention<br><b>Total: $684M</b>',
-                    x: 0.225,
-                    y: 1.05,
+                    x: 0.22,
+                    y: 0.95,
                     xref: 'paper',
                     yref: 'paper',
                     showarrow: false,
-                    font: { size: 12, color: '#1f2937' }
+                    font: { size: 11, color: '#1f2937' }
                 },
                 {
                     text: 'Implementation Costs<br><b>Total: $171M</b>',
-                    x: 0.225,
-                    y: 0.45,
+                    x: 0.22,
+                    y: 0.38,
                     xref: 'paper',
                     yref: 'paper',
                     showarrow: false,
-                    font: { size: 12, color: '#1f2937' }
+                    font: { size: 11, color: '#1f2937' }
                 },
                 {
                     text: '5-Year Financial Projection<br><b>400% Total ROI</b>',
-                    x: 0.775,
-                    y: 1.05,
+                    x: 0.78,
+                    y: 0.95,
                     xref: 'paper',
                     yref: 'paper',
                     showarrow: false,
-                    font: { size: 12, color: '#1f2937' }
+                    font: { size: 11, color: '#1f2937' }
                 }
             ],
 
-            // Cost bar chart layout (bottom left)
+            // Cost bar chart layout (bottom left) - better spacing
             xaxis2: {
-                domain: [0, 0.45],
+                domain: [0, 0.42],
                 anchor: 'y2',
-                title: 'Interventions',
-                titlefont: { size: 10 }
+                title: { text: 'Interventions', font: { size: 9 } },
+                tickfont: { size: 8 }
             },
             yaxis2: {
-                domain: [0, 0.4],
+                domain: [0, 0.32],
                 anchor: 'x2',
-                title: 'Cost ($M)',
-                titlefont: { size: 10 }
+                title: { text: 'Cost ($M)', font: { size: 9 } },
+                tickfont: { size: 8 }
             },
 
-            // ROI timeline layout (right side)
+            // ROI timeline layout (right side) - better spacing
             xaxis3: {
-                domain: [0.55, 1],
+                domain: [0.52, 1],
                 anchor: 'y3',
-                title: 'Timeline',
-                titlefont: { size: 10 }
+                title: { text: 'Timeline', font: { size: 9 } },
+                tickfont: { size: 8 }
             },
             yaxis3: {
-                domain: [0.5, 1],
+                domain: [0.48, 1],
                 anchor: 'x3',
-                title: 'ROI (%)',
+                title: { text: 'ROI (%)', font: { size: 9, color: '#10b981' } },
                 side: 'right',
-                titlefont: { size: 10, color: '#10b981' }
+                tickfont: { size: 8 }
             },
             yaxis4: {
-                domain: [0.5, 1],
+                domain: [0.48, 1],
                 anchor: 'x3',
-                title: 'Net Benefit ($M)',
+                title: { text: 'Net Benefit ($M)', font: { size: 9, color: '#3b82f6' } },
                 side: 'left',
                 overlaying: 'y3',
-                titlefont: { size: 10, color: '#3b82f6' }
+                tickfont: { size: 8 }
             },
 
             legend: {
                 orientation: 'h',
-                y: -0.1,
+                y: -0.15,
                 x: 0.5,
-                xanchor: 'center'
+                xanchor: 'center',
+                font: { size: 9 }
             },
-            margin: { t: 80, b: 100, l: 70, r: 70 }
+            margin: { t: 20, b: 120, l: 60, r: 60 }
         };
 
         Plotly.newPlot('savingsBreakdownChart', [pieTrace, costTrace, roiTrace, benefitTrace], layout, {responsive: true});
