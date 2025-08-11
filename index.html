@@ -483,31 +483,20 @@
             margin: 0;
         }
 
-        .nav-buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .nav-btn {
-            padding: 1rem 1.5rem;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            background: var(--bg-color);
-            color: var(--text-color);
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
+        .welcome-message {
             text-align: center;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(37, 99, 235, 0.05);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-color);
         }
 
-        .nav-btn:hover {
-            border-color: var(--primary-color);
-            background: var(--primary-color);
-            color: white;
-            transform: translateY(-1px);
+        .welcome-message p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin: 0;
         }
 
         .key-metrics {
@@ -1200,39 +1189,22 @@
         </div>
     </div>
 
-                <div class="subtitle">
-                <div class="project-summary">
-                    <h3>Advanced Flight Delay Analytics Platform</h3>
-                    <p><strong>Project Overview:</strong> Comprehensive analysis of 5.73 million flight records using advanced data science techniques to optimize airline operations and reduce costs through predictive analytics and strategic insights.</p>
-                    
-                    <h3>Key Achievements</h3>
-                    <p><strong>Results:</strong> 84.9% data retention through sophisticated cleaning, 192% machine learning performance improvement, $684M projected annual savings, and actionable recommendations for operational excellence.</p>
-                </div>
-            </div>
+
 
     <!-- Navigation -->
     <div class="nav-container">
         <nav class="nav">
             <button class="nav-item active" onclick="showSection('overview')">
-                Overview
-            </button>
-            <button class="nav-item" onclick="showSection('executive')">
-                Executive Summary
-            </button>
-            <button class="nav-item" onclick="showSection('dataprep')">
-                Data Preparation
+                Home
             </button>
             <button class="nav-item" onclick="showSection('visualization')">
-                Core Analysis
-            </button>
-            <button class="nav-item" onclick="showSection('detailed')">
-                Detailed Analysis
+                Analytics
             </button>
             <button class="nav-item" onclick="showSection('regression')">
-                Regression Models
+                ML Models
             </button>
             <button class="nav-item" onclick="showSection('insights')">
-                Business Strategy
+                Strategy
             </button>
         </nav>
     </div>
@@ -1253,11 +1225,8 @@
                     </div>
                 </div>
                 
-                <div class="nav-buttons">
-                    <button class="nav-btn" onclick="showSection('executive')">Executive Summary</button>
-                    <button class="nav-btn" onclick="showSection('visualization')">Core Analytics</button>
-                    <button class="nav-btn" onclick="showSection('regression')">ML Models</button>
-                    <button class="nav-btn" onclick="showSection('insights')">Business Strategy</button>
+                <div class="welcome-message">
+                    <p>Welcome to our comprehensive flight delay analysis platform. Navigate using the menu above to explore our data insights, machine learning models, and strategic recommendations.</p>
                 </div>
 
                 <div class="key-metrics">
@@ -1280,100 +1249,11 @@
                 </div>
             </div>
 
-            <!-- Project Overview -->
-            <div class="project-overview">
-                <h2 class="section-title">Comprehensive Analytics Framework</h2>
-                <p class="section-description">
-                    This advanced analytics project transforms 5.73 million domestic flight records from 2015 into strategic business intelligence through systematic data engineering, sophisticated machine learning methodologies, and comprehensive operational cost analysis. Our multi-phase approach delivers actionable insights for airline optimization, predictive delay management, and quantified ROI projections.
-                </p>
 
-                <div class="overview-grid">
-                    <div class="overview-card fade-in">
-                        <h3>Advanced Data Engineering Excellence</h3>
-                        <p>Implemented comprehensive data quality assessment and transformation pipeline with sophisticated missing value treatment strategies, temporal distribution rebalancing, and feature engineering protocols. Our robust ETL process achieved 84.9% data retention while creating 24 derived analytical features.</p>
-                        <ul>
-                            <li>5.73M original records with systematic quality profiling</li>
-                            <li>867K missing values addressed through domain-informed imputation</li>
-                            <li>Stratified sampling methodology ensuring representative temporal distribution</li>
-                            <li>24 engineered features including temporal indicators and operational metrics</li>
-                            <li>Advanced outlier detection and statistical validation protocols</li>
-                        </ul>
-                    </div>
-                    <div class="overview-card fade-in">
-                        <h3>Machine Learning & Predictive Analytics</h3>
-                        <p>Systematic evaluation of three distinct machine learning algorithms with comprehensive hyperparameter optimization, cross-validation protocols, and performance assessment. Achieved 192% improvement over baseline through ensemble methods with production-ready deployment capability.</p>
-                        <ul>
-                            <li>Linear Regression baseline establishment (R² = 2.9%)</li>
-                            <li>Random Forest ensemble bagging (94% improvement, R² = 5.6%)</li>
-                            <li>Gradient Boosting optimization (192% improvement, R² = 8.4%)</li>
-                            <li>5-fold cross-validation with overfitting assessment</li>
-                            <li>Feature importance analysis and model interpretability</li>
-                            <li>Production deployment readiness evaluation</li>
-                        </ul>
-                    </div>
-                    <div class="overview-card fade-in">
-                        <h3>Strategic Business Intelligence Solutions</h3>
-                        <p>Developed comprehensive business intelligence framework linking analytical insights to operational strategies. Quantified financial impact through cost-benefit analysis and created implementation roadmaps with measurable ROI projections for airline operational excellence initiatives.</p>
-                        <ul>
-                            <li>$4.6B annual delay cost quantification and impact analysis</li>
-                            <li>Controllable factor identification (43.2% predictive power)</li>
-                            <li>Peak-hour optimization strategies with 15-20% delay reduction potential</li>
-                            <li>Hub-specific intervention protocols for major airports</li>
-                            <li>Predictive maintenance scheduling integration frameworks</li>
-                            <li>$684M annual savings projection through systematic improvements</li>
-                        </ul>
-                    </div>
-                </div>
 
-                <div class="methodology-detail">
-                    <h3>Technical Innovation & Analytical Rigor</h3>
-                    <p><strong>Comprehensive Research Methodology:</strong> Our systematic analytical approach integrates advanced data science techniques with practical business application through a structured pipeline encompassing statistical data profiling, domain-informed missing value treatment, sophisticated feature engineering with temporal and categorical transformations, multi-dimensional exploratory analysis using advanced visualization libraries, ensemble machine learning with rigorous validation protocols, and quantified business impact assessment through cost-benefit analysis.</p>
-                    
-                    <p><strong>Technical Excellence Framework:</strong> The project demonstrates mastery of modern analytics technologies including Python-based data manipulation (Pandas, NumPy), advanced visualization frameworks (Plotly.js, Matplotlib, Seaborn), machine learning implementation (Scikit-learn ensemble methods), statistical analysis and hypothesis testing, responsive web dashboard development, and comprehensive documentation with reproducible workflows. This technical foundation enables robust, scalable analysis suitable for enterprise-level operational decision-making.</p>
-                </div>
-            </div>
 
-            <div class="analysis-quote">
-                Data analysis is not just about numbers; it's about uncovering the stories that drive business transformation. In aviation, every minute of delay represents both customer dissatisfaction and operational cost—making data-driven insights essential for competitive advantage.
-                <div class="quote-author">— Aviation Analytics Principle</div>
-            </div>
-            
-            <div class="cards-grid">
-                <div class="card metric-card">
-                    <div class="metric-value">5.73M</div>
-                    <div class="metric-label">Original Dataset Size</div>
-                </div>
-                <div class="card metric-card">
-                    <div class="metric-value">4.87M</div>
-                    <div class="metric-label">Cleaned Dataset Size</div>
-                </div>
-                <div class="card metric-card">
-                    <div class="metric-value">17.8%</div>
-                    <div class="metric-label">Overall Delay Rate</div>
-                </div>
-                <div class="card metric-card">
-                    <div class="metric-value">15 min</div>
-                    <div class="metric-label">FAA Delay Threshold</div>
-                </div>
-                <div class="card metric-card">
-                    <div class="metric-value">17,830</div>
-                    <div class="metric-label">Flights Exceeding FAA Threshold</div>
-                </div>
-                <div class="card metric-card">
-                    <div class="metric-value">$85/min</div>
-                    <div class="metric-label">Cost Per Delay Minute</div>
-                </div>
-            </div>
 
-            <div class="chart-explanation">
-                <h4>Understanding Delay Classifications</h4>
-                <p>Flight delays are categorized based on FAA standards where delays exceeding 15 minutes are considered significant. Our analysis reveals that 17.8% of flights experience delays, with severe delays (>2 hours) representing a critical 2.02% that requires immediate strategic attention due to their disproportionate cost impact.</p>
-            </div>
 
-            <div class="key-finding">
-                <div class="key-finding-title">Key Finding: Cost-Impact Disparity</div>
-                While severe delays represent only 2% of flights, they account for over 35% of total delay-related costs, highlighting the critical importance of prevention strategies.
-            </div>
         </section>
 
         <!-- Executive Summary Section -->
