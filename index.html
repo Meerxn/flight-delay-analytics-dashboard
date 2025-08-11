@@ -673,6 +673,76 @@
             }
         }
 
+        /* Additional Plots Styles */
+        .additional-plots {
+            margin: 3rem 0;
+            padding: 2rem;
+            background: rgba(37, 99, 235, 0.03);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .additional-plots h3 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .additional-plots > p {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .plots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .plot-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .plot-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+        }
+
+        .plot-card h4 {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .plot-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 1rem;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 768px) {
+            .plots-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .additional-plots {
+                padding: 1.5rem;
+            }
+        }
+
         .key-metrics {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -1702,6 +1772,59 @@
                 <div class="chart-explanation">
                     <h4>Operational Cost Discovery</h4>
                     <p><strong>Cost Concentration Identified:</strong> 2-hour time blocks reveal distinct delay patterns, while severe delay analysis shows cost escalation. The majority of costs concentrate in 2-3 hour delays, indicating targeted intervention opportunities.</p>
+                </div>
+            </div>
+
+            <!-- Additional Plots Section -->
+            <div class="additional-plots">
+                <h3>Additional Analysis & Supporting Visualizations</h3>
+                <p>Comprehensive collection of additional charts and specialized analysis supporting our core findings.</p>
+                
+                <div class="chart-card">
+                    <h3 class="chart-title">Weekend vs Weekday Analysis</h3>
+                    <div class="chart-container" id="weekendAnalysis"></div>
+                    <div class="chart-explanation">
+                        <h4>Weekend Operations Insights</h4>
+                        <p><strong>Operational Differences:</strong> Weekend flight patterns show distinct characteristics from weekday operations, with different delay patterns and volumes that require specialized management strategies.</p>
+                    </div>
+                </div>
+
+                <div class="plots-grid">
+                    <div class="plot-card">
+                        <h4>FAA Threshold Analysis</h4>
+                        <div class="chart-container" id="faaThresholdChart"></div>
+                        <p>Distribution of delays relative to FAA 15-minute threshold</p>
+                    </div>
+                    
+                    <div class="plot-card">
+                        <h4>Summer Travel Patterns</h4>
+                        <div class="chart-container" id="summerTravelChart"></div>
+                        <p>Seasonal analysis highlighting June-July peak travel impacts</p>
+                    </div>
+                    
+                    <div class="plot-card">
+                        <h4>Day-of-Month Analysis</h4>
+                        <div class="chart-container" id="dayOfMonthViolin"></div>
+                        <p>Violin plot showing delay distribution across days of the month</p>
+                    </div>
+                    
+                    <div class="plot-card">
+                        <h4>Delay Difference Analysis</h4>
+                        <div class="chart-container" id="delayDifferenceAnalysis"></div>
+                        <p>Analysis of flights with significant arrival vs departure delay differences</p>
+                    </div>
+                    
+                    <div class="plot-card">
+                        <h4>Early Arrival Cost Analysis</h4>
+                        <div class="chart-container" id="earlyArrivalWaste"></div>
+                        <p>Economic impact of early arrivals and resource optimization</p>
+                    </div>
+                    
+                    <div class="plot-card">
+                        <h4>Distance Predictive Analysis</h4>
+                        <div class="chart-container" id="distancePredictiveChart"></div>
+                        <p>Flight distance as a predictive feature for delays</p>
+                    </div>
                 </div>
             </div>
         </section>
