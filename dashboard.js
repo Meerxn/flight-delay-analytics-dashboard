@@ -143,6 +143,11 @@ class FlightDelayDashboard {
         this.createCrossValidationChart();
         this.createDeploymentReadinessChart();
         this.createDelayReasonsChart();
+        this.createDelayReasonsByFlightChart();
+        this.createWeatherDelaysChart();
+        this.createATCDelaysChart();
+        this.createAirlineDelaysChart();
+        this.createSecurityDelaysChart();
         this.createTeam8JourneyChart();
         this.createROIAnalysisChart();
     }
@@ -1740,6 +1745,203 @@ class FlightDelayDashboard {
         Plotly.newPlot('delayReasonsChart', [trace1, trace2], layout, {responsive: true});
     }
 
+    // Delay Reasons by Flight Type Chart
+    createDelayReasonsByFlightChart() {
+        const flightReasons = {
+            flightTypes: ['Short-haul (<500mi)', 'Medium-haul (500-1500mi)', 'Long-haul (>1500mi)'],
+            weather: [35, 25, 15],
+            atc: [20, 30, 25],
+            airline: [25, 30, 40],
+            security: [10, 10, 15],
+            other: [10, 5, 5]
+        };
+
+        const trace1 = {
+            x: flightReasons.flightTypes,
+            y: flightReasons.weather,
+            name: 'Weather',
+            type: 'bar',
+            marker: { color: '#3b82f6' }
+        };
+
+        const trace2 = {
+            x: flightReasons.flightTypes,
+            y: flightReasons.atc,
+            name: 'Air Traffic Control',
+            type: 'bar',
+            marker: { color: '#ef4444' }
+        };
+
+        const trace3 = {
+            x: flightReasons.flightTypes,
+            y: flightReasons.airline,
+            name: 'Airline Operations',
+            type: 'bar',
+            marker: { color: '#f59e0b' }
+        };
+
+        const trace4 = {
+            x: flightReasons.flightTypes,
+            y: flightReasons.security,
+            name: 'Security',
+            type: 'bar',
+            marker: { color: '#10b981' }
+        };
+
+        const trace5 = {
+            x: flightReasons.flightTypes,
+            y: flightReasons.other,
+            name: 'Other',
+            type: 'bar',
+            marker: { color: '#8b5cf6' }
+        };
+
+        const layout = {
+            paper_bgcolor: 'white',
+            plot_bgcolor: '#fafbfc',
+            font: { color: '#000000', family: 'Inter', size: 12 },
+            barmode: 'stack',
+            xaxis: { title: 'Flight Type by Distance' },
+            yaxis: { title: 'Percentage of Delays (%)' },
+            legend: { orientation: 'h', y: -0.2 },
+            margin: { t: 40, b: 100, l: 60, r: 60 }
+        };
+
+        Plotly.newPlot('delayReasonsByFlight', [trace1, trace2, trace3, trace4, trace5], layout, {responsive: true});
+    }
+
+    // Weather Delays Chart
+    createWeatherDelaysChart() {
+        const weatherData = {
+            conditions: ['Clear', 'Rain', 'Snow', 'Fog', 'Storms'],
+            delays: [5, 15, 25, 30, 45],
+            flightCounts: [450000, 85000, 25000, 15000, 8000]
+        };
+
+        const trace = {
+            x: weatherData.conditions,
+            y: weatherData.delays,
+            type: 'bar',
+            marker: { color: ['#10b981', '#3b82f6', '#6b7280', '#9ca3af', '#ef4444'] },
+            text: weatherData.flightCounts.map(count => `${(count/1000).toFixed(0)}K flights`),
+            textposition: 'auto'
+        };
+
+        const layout = {
+            paper_bgcolor: 'white',
+            plot_bgcolor: '#fafbfc',
+            font: { color: '#000000', family: 'Inter', size: 11 },
+            xaxis: { title: 'Weather Conditions' },
+            yaxis: { title: 'Average Delay Rate (%)' },
+            margin: { t: 30, b: 60, l: 60, r: 30 }
+        };
+
+        Plotly.newPlot('weatherDelaysChart', [trace], layout, {responsive: true});
+    }
+
+    // ATC Delays Chart
+    createATCDelaysChart() {
+        const atcData = {
+            reasons: ['Congestion', 'Equipment', 'Runway', 'Staffing'],
+            impact: [40, 25, 20, 15],
+            colors: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981']
+        };
+
+        const trace = {
+            values: atcData.impact,
+            labels: atcData.reasons,
+            type: 'pie',
+            marker: { colors: atcData.colors },
+            textinfo: 'label+percent',
+            textposition: 'auto'
+        };
+
+        const layout = {
+            paper_bgcolor: 'white',
+            font: { color: '#000000', family: 'Inter', size: 11 },
+            margin: { t: 30, b: 30, l: 30, r: 30 }
+        };
+
+        Plotly.newPlot('atcDelaysChart', [trace], layout, {responsive: true});
+    }
+
+    // Airline Operations Delays Chart
+    createAirlineDelaysChart() {
+        const airlineData = {
+            operations: ['Crew', 'Maintenance', 'Catering', 'Boarding', 'Baggage'],
+            delays: [35, 30, 15, 12, 8],
+            costs: [850, 1200, 300, 200, 150]
+        };
+
+        const trace1 = {
+            x: airlineData.operations,
+            y: airlineData.delays,
+            type: 'bar',
+            name: 'Delay Frequency (%)',
+            marker: { color: '#3b82f6' },
+            yaxis: 'y'
+        };
+
+        const trace2 = {
+            x: airlineData.operations,
+            y: airlineData.costs,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Avg Cost per Incident ($)',
+            line: { color: '#ef4444', width: 3 },
+            marker: { size: 8 },
+            yaxis: 'y2'
+        };
+
+        const layout = {
+            paper_bgcolor: 'white',
+            plot_bgcolor: '#fafbfc',
+            font: { color: '#000000', family: 'Inter', size: 11 },
+            xaxis: { title: 'Operational Categories' },
+            yaxis: { title: 'Delay Frequency (%)', side: 'left' },
+            yaxis2: { title: 'Cost per Incident ($)', overlaying: 'y', side: 'right' },
+            legend: { orientation: 'h', y: -0.2 },
+            margin: { t: 30, b: 80, l: 60, r: 60 }
+        };
+
+        Plotly.newPlot('airlineDelaysChart', [trace1, trace2], layout, {responsive: true});
+    }
+
+    // Security Delays Chart
+    createSecurityDelaysChart() {
+        const securityData = {
+            categories: ['Standard Screening', 'Enhanced Screening', 'Equipment Issues', 'Staffing'],
+            timeDistribution: [
+                [5, 10, 15, 20, 25, 15, 10], // Standard - mostly quick
+                [10, 15, 20, 25, 20, 8, 2], // Enhanced - longer
+                [15, 20, 25, 20, 15, 3, 2], // Equipment - varied
+                [20, 25, 25, 20, 8, 2, 0] // Staffing - mostly moderate
+            ],
+            timeRanges: ['0-5min', '5-10min', '10-15min', '15-20min', '20-30min', '30-45min', '45+min']
+        };
+
+        const traces = securityData.categories.map((category, i) => ({
+            x: securityData.timeRanges,
+            y: securityData.timeDistribution[i],
+            name: category,
+            type: 'bar',
+            opacity: 0.8
+        }));
+
+        const layout = {
+            paper_bgcolor: 'white',
+            plot_bgcolor: '#fafbfc',
+            font: { color: '#000000', family: 'Inter', size: 11 },
+            barmode: 'group',
+            xaxis: { title: 'Processing Time' },
+            yaxis: { title: 'Percentage of Cases (%)' },
+            legend: { orientation: 'h', y: -0.25 },
+            margin: { t: 30, b: 90, l: 60, r: 30 }
+        };
+
+        Plotly.newPlot('securityDelaysChart', traces, layout, {responsive: true});
+    }
+
     // Team 8 Analysis Journey Chart
     createTeam8JourneyChart() {
         const analysisStages = {
@@ -1963,6 +2165,7 @@ window.addEventListener('resize', function() {
                    'airportAnalysis', 'distanceAnalysis', 'delayReasonsChart', 'timeBlockAnalysis', 'severeCostAnalysis',
                    'delayDifferenceAnalysis', 'earlyArrivalWaste', 'faaThresholdChart', 
                    'summerTravelChart', 'dayOfMonthViolin', 'distancePredictiveChart',
+                   'delayReasonsByFlight', 'weatherDelaysChart', 'atcDelaysChart', 'airlineDelaysChart', 'securityDelaysChart',
                    'modelComparison', 'rmseComparison', 'featureImportance', 
                    'modelValidation', 'crossValidationChart', 'deploymentReadinessChart',
                    'team8JourneyChart', 'roiAnalysis'];

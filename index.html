@@ -698,17 +698,18 @@
 
         .plots-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
             margin-top: 2rem;
         }
 
         .plot-card {
             background: var(--card-bg);
-            padding: 1.5rem;
+            padding: 2rem;
             border-radius: 12px;
             border: 1px solid var(--border-color);
             transition: all 0.3s ease;
+            min-height: 400px;
         }
 
         .plot-card:hover {
@@ -739,6 +740,77 @@
             }
 
             .additional-plots {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Delay Reasons Section Styles */
+        .delay-reasons-section {
+            margin: 3rem 0;
+            padding: 2rem;
+            background: rgba(245, 158, 11, 0.03);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .delay-reasons-section h3 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .delay-reasons-section > p {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .reasons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .reason-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            min-height: 400px;
+        }
+
+        .reason-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+        }
+
+        .reason-card h4 {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .reason-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 1rem;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 768px) {
+            .reasons-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .delay-reasons-section {
                 padding: 1.5rem;
             }
         }
@@ -1824,6 +1896,47 @@
                         <h4>Distance Predictive Analysis</h4>
                         <div class="chart-container" id="distancePredictiveChart"></div>
                         <p>Flight distance as a predictive feature for delays</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delay Reasons Analysis Section -->
+            <div class="delay-reasons-section">
+                <h3>Flight Delay Reasons & Root Cause Analysis</h3>
+                <p>Comprehensive breakdown of delay causes across different flight types and operational factors.</p>
+                
+                <div class="chart-card">
+                    <h3 class="chart-title">Delay Reasons by Flight Type</h3>
+                    <div class="chart-container" id="delayReasonsByFlight"></div>
+                    <div class="chart-explanation">
+                        <h4>Operational Cause Analysis</h4>
+                        <p><strong>Root Cause Insights:</strong> Different flight types experience delays for different reasons. Short-haul flights face more weather impacts, while long-haul flights show higher security and maintenance delays.</p>
+                    </div>
+                </div>
+
+                <div class="reasons-grid">
+                    <div class="reason-card">
+                        <h4>Weather-Related Delays</h4>
+                        <div class="chart-container" id="weatherDelaysChart"></div>
+                        <p>Impact of weather conditions on flight operations</p>
+                    </div>
+                    
+                    <div class="reason-card">
+                        <h4>Air Traffic Control Delays</h4>
+                        <div class="chart-container" id="atcDelaysChart"></div>
+                        <p>Congestion and air traffic management delays</p>
+                    </div>
+                    
+                    <div class="reason-card">
+                        <h4>Airline Operations Delays</h4>
+                        <div class="chart-container" id="airlineDelaysChart"></div>
+                        <p>Crew, maintenance, and operational delays</p>
+                    </div>
+                    
+                    <div class="reason-card">
+                        <h4>Security & Other Delays</h4>
+                        <div class="chart-container" id="securityDelaysChart"></div>
+                        <p>Security procedures and miscellaneous delays</p>
                     </div>
                 </div>
             </div>
