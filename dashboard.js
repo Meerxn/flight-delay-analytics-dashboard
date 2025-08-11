@@ -142,6 +142,7 @@ class FlightDelayDashboard {
         this.createModelValidationChart();
         this.createCrossValidationChart();
         this.createDeploymentReadinessChart();
+        this.createDelayReasonsChart();
         this.createTeam8JourneyChart();
         this.createROIAnalysisChart();
     }
@@ -1655,6 +1656,90 @@ class FlightDelayDashboard {
         Plotly.newPlot('distancePredictiveChart', [trace1, trace2, trace3], layout, {responsive: true});
     }
 
+    // Delay Reasons Chart
+    createDelayReasonsChart() {
+        const delayReasons = {
+            categories: ['On-Time (0-15 min)', 'Minor Delays (15-30 min)', 'Moderate Delays (30-60 min)', 'Significant Delays (60-120 min)', 'Severe Delays (>120 min)'],
+            flightCounts: [4200000, 420000, 180000, 55000, 18000],
+            costImpact: [0, 85, 170, 340, 680], // Cost per minute * average delay
+            delayRates: [73.2, 7.3, 3.1, 1.0, 0.3],
+            colors: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#dc2626']
+        };
+
+        // Flight count bars
+        const trace1 = {
+            x: delayReasons.categories,
+            y: delayReasons.flightCounts,
+            type: 'bar',
+            name: 'Flight Count',
+            marker: { color: delayReasons.colors, opacity: 0.8 },
+            yaxis: 'y'
+        };
+
+        // Cost impact line
+        const trace2 = {
+            x: delayReasons.categories,
+            y: delayReasons.costImpact,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Avg Cost per Flight ($)',
+            line: { color: '#dc2626', width: 3 },
+            marker: { size: 8, color: '#dc2626' },
+            yaxis: 'y2'
+        };
+
+        const layout = {
+            paper_bgcolor: 'white',
+            plot_bgcolor: '#fafbfc',
+            font: { color: '#000000', family: 'Inter', size: 12 },
+            xaxis: { 
+                title: 'Delay Categories',
+                gridcolor: '#f1f3f4',
+                gridwidth: 1
+            },
+            yaxis: { 
+                title: 'Number of Flights',
+                gridcolor: '#f1f3f4',
+                gridwidth: 1,
+                side: 'left'
+            },
+            yaxis2: {
+                title: 'Average Cost per Flight ($)',
+                overlaying: 'y',
+                side: 'right',
+                gridcolor: '#f1f3f4',
+                gridwidth: 1
+            },
+            annotations: [
+                {
+                    x: 'Severe Delays (>120 min)',
+                    y: 680,
+                    text: 'High Cost Impact<br>Low Frequency',
+                    showarrow: true,
+                    arrowhead: 2,
+                    font: { color: '#dc2626', size: 11 }
+                },
+                {
+                    x: 'On-Time (0-15 min)',
+                    y: 4200000,
+                    text: 'Majority of Operations<br>73.2% of flights',
+                    showarrow: true,
+                    arrowhead: 2,
+                    font: { color: '#10b981', size: 11 }
+                }
+            ],
+            legend: { 
+                orientation: 'h', 
+                y: -0.2,
+                x: 0.5,
+                xanchor: 'center'
+            },
+            margin: { t: 40, b: 100, l: 80, r: 80 }
+        };
+
+        Plotly.newPlot('delayReasonsChart', [trace1, trace2], layout, {responsive: true});
+    }
+
     // Team 8 Analysis Journey Chart
     createTeam8JourneyChart() {
         const analysisStages = {
@@ -1875,7 +1960,7 @@ document.addEventListener('DOMContentLoaded', function() {
 window.addEventListener('resize', function() {
     const charts = ['dataQualityChart', 'cleaningWorkflowChart', 'delayDistribution', 
                    'airlinePerformance', 'hourlyPatterns', 'monthlyTrends', 'weekendAnalysis', 
-                   'airportAnalysis', 'distanceAnalysis', 'timeBlockAnalysis', 'severeCostAnalysis',
+                   'airportAnalysis', 'distanceAnalysis', 'delayReasonsChart', 'timeBlockAnalysis', 'severeCostAnalysis',
                    'delayDifferenceAnalysis', 'earlyArrivalWaste', 'faaThresholdChart', 
                    'summerTravelChart', 'dayOfMonthViolin', 'distancePredictiveChart',
                    'modelComparison', 'rmseComparison', 'featureImportance', 
